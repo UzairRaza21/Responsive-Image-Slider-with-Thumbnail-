@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<title>Robotics Slider</title>
+<style>
+
+    .Robotics-Slider-main{
+        width: 440px;
+        overflow-x: hidden;
+        position: relative;
+        z-index: 1;
+    }
+    .Robotics-Slider-main .slider-left-btn i{
+        color: rgb(255, 255, 255);
+        font-size: 20px;
+        position: absolute;
+        bottom: 50%;
+        cursor: pointer;
+        transform: translateY(-50%);
+        border: 1px solid white;
+        border-radius: 50%;
+        padding: 10px;
+        left: 0.5rem;
+        z-index: 1;
+    }
+    .Robotics-Slider-main .slider-right-btn i{
+        color: white;
+        font-size: 20px;
+        position: absolute;
+        right: 0.5rem;
+        bottom: 50%;
+        cursor: pointer;
+        transform: translateY(-50%);
+        border: 1px solid white;
+        border-radius: 50%;
+        padding: 10px;
+    }
+    .Robotics-Slider-main .slider-container {
+        position: relative;
+        width: 440px;
+        overflow: hidden;
+    }
+    .Robotics-Slider-main  .slider {
+        display: flex;
+        transition: transform 0.5s ease;
+    }
+    .Robotics-Slider-main  .slide {
+        min-width: 440px;
+    
+    }
+    .Robotics-Slider-main  .slide img{
+        width: 100%;
+        height: 100%;
+    }
+    .Robotics-Slider-main  .thumbnails {
+        display: flex;
+        overflow-x: hidden;
+        margin: 10px 0px 0 0px;
+     
+    }
+    .Robotics-Slider-main  .thumbnail {
+        flex: 0 0 100px; /* Adjust thumbnail size */
+        margin-right: 10px;
+        cursor: pointer;
+    }
+    .Robotics-Slider-main  .thumbnail img {
+        width: 100%;
+        height: 95%;
+    }
+  
+
+    @media screen and (max-width: 768px) {
+        .Robotics-Slider-main  .thumbnails{
+            display: none;
+        }
+        .Robotics-Slider-main  .Robotics-Slider-main{
+        width: auto;
+        }
+        .Robotics-Slider-main  .slider-container {
+        width: auto;
+        }
+        .Robotics-Slider-main .slider-left-btn i{
+        bottom: 45%;
+    }
+    .Robotics-Slider-main .slider-right-btn i{
+        bottom: 45%;
+    }
+  
+    }
+</style>
+</head>
+<body>
+
+<div class="Robotics-Slider-main">
+
+
+    <div class="slider-left-btn" onclick="prevSlide()"><i class="fa-solid fa-arrow-left-long"></i></div>
+
+<div class="slider-container">
+    <div class="slider">
+        <div class="slide"><img src="https://picsum.photos/id/230/600/500" alt="Image 1"></div>
+        <div class="slide"><img src="https://picsum.photos/id/231/600/500" alt="Image 2"></div>
+        <div class="slide"><img src="https://picsum.photos/id/232/600/500" alt="Image 3"></div>
+        <div class="slide"><img src="https://picsum.photos/id/233/600/500" alt="Image 4"></div>
+        <div class="slide"><img src="https://picsum.photos/id/234/600/500" alt="Image 5"></div>
+        <!-- Add more slides as needed -->
+    </div>
+</div>
+
+<div class="slider-right-btn" onclick="nextSlide()"><i class="fa-solid fa-arrow-right-long"></i></div>
+
+<div class="thumbnails">
+    <div class="thumbnail"><img src="https://picsum.photos/id/230/600/500" alt="Thumbnail 1"></div>
+    <div class="thumbnail"><img src="https://picsum.photos/id/231/600/500" alt="Thumbnail 2"></div>
+    <div class="thumbnail"><img src="https://picsum.photos/id/232/600/500" alt="Thumbnail 3"></div>
+    <div class="thumbnail"><img src="https://picsum.photos/id/233/600/500" alt="Thumbnail 4"></div>
+    <div class="thumbnail"><img src="https://picsum.photos/id/234/600/500" alt="Thumbnail 5"></div>
+    <!-- Add more thumbnails as needed -->
+</div>
+
+
+
+</div>
+<script>
+    const slider = document.querySelector('.slider');
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    const thumbnailContainer = document.querySelector('.thumbnails');
+
+
+    let currentIndex = 0;
+    let slideWidth = document.querySelector('.slide').offsetWidth;
+
+    // Set the initial active thumbnail
+    thumbnails[currentIndex].style.display = 'none';
+   
+ 
+    // Event listeners for thumbnail click
+    thumbnails.forEach((thumbnail, index) => {
+        thumbnail.addEventListener('click', () => {
+            currentIndex = index;
+            updateSlider();
+        });
+    });
+
+    // Event listener for window resize
+    window.addEventListener('resize', () => {
+        slideWidth = document.querySelector('.slide').offsetWidth;
+        // thumbnailWidth = document.querySelector('.thumbnail');
+        updateSlider();
+    });
+
+
+
+    function updateSlider() {
+    slider.style.transform = `translateX(-${slideWidth * currentIndex}px)`;
+
+    // Update thumbnail opacity
+    thumbnails.forEach(thumbnail => {
+        thumbnail.style.display = 'block';
+    });
+    thumbnails[currentIndex].style.display = 'none';
+
+    // Update thumbnail position
+    const thumbnailWidth = thumbnails[0].offsetWidth;
+    const thumbnailContainerWidth = thumbnailContainer.offsetWidth;
+    const thumbnailVisibleCount = Math.floor(thumbnailContainerWidth / thumbnailWidth);
+    const thumbnailsScrollWidth = thumbnailWidth * (currentIndex - thumbnailVisibleCount + 1);
+    thumbnailContainer.scrollLeft = thumbnailsScrollWidth < 0 ? 0 : thumbnailsScrollWidth;
+}
+
+
+    // Function to handle next button click
+    function nextSlide() {
+        currentIndex = (currentIndex + 1) % thumbnails.length;
+        updateSlider();
+    }
+
+    // Function to handle previous button click
+    function prevSlide() {
+        currentIndex = (currentIndex - 1 + thumbnails.length) % thumbnails.length;
+        updateSlider();
+    }
+
+    // Scroll thumbnails with mouse drag
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    thumbnailContainer.addEventListener('mousedown', e => {
+        isDown = true;
+        startX = e.pageX - thumbnailContainer.offsetLeft;
+        scrollLeft = thumbnailContainer.scrollLeft;
+    });
+
+    thumbnailContainer.addEventListener('mouseleave', () => {
+        isDown = false;
+    });
+
+    thumbnailContainer.addEventListener('mouseup', () => {
+        isDown = false;
+    });
+
+    thumbnailContainer.addEventListener('mousemove', e => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - thumbnailContainer.offsetLeft;
+        const walk = (x - startX) * 3; // Adjust the speed of scrolling
+        thumbnailContainer.scrollLeft = scrollLeft - walk;
+    });
+</script>
+
+</body>
+</html>
